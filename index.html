@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jewellery Loan Calculator</title>
+    <link rel="icon" type="image/png" href="C:/Users/MSG/Projects/jewellery-loan-app/assets/images/logo.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #abecfc; 
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            }
+
+        button {
+            transition: background-color 0.3s, transform 0.2s;
+            }
+        button:hover {
+            transform: scale(1.05);
+            }
+
+
+        .container {
+            max-width: 1400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgb(230, 233, 190);
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+        }
+        input {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+        button#calculate-btn {
+            background: linear-gradient(to right, #28a745, #34d058);
+        }
+        button#reset-btn {
+            background: linear-gradient(to right, #dc3545, #e4606d);
+        }
+
+        h2,
+        h2 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 28px;
+            color: #003366; 
+            margin-top: 0;
+        }
+
+        h3 {
+            margin-bottom: 15px;
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            width: 30%;
+            box-sizing: border-box;
+        }
+
+        /* Different Colors for Each Karat */
+        .card-18 {
+            background-color: #cce7ff;
+        }
+
+        .card-19 {
+            background-color: #b3e0ff;
+        }
+
+        .card-20 {
+            background-color: #99d6ff;
+        }
+
+        .card-21 {
+            background-color: #80ccff;
+        }
+
+        .card-22 {
+            background-color: #66c2ff;
+        }
+
+        label,
+        input {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        /* Green for Calculate */
+        .btn-calculate {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            width: 48%;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn-calculate:hover {
+            background-color: #218838;
+        }
+
+        /* Red for Reset */
+        .btn-reset {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            width: 48%;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn-reset:hover {
+            background-color: #c82333;
+        }
+
+        #results {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .breakdown {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: left;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .logo-container {
+        text-align: center;
+        margin-bottom: 15px;
+        }
+
+        .logo {
+        max-width: 120px;
+        height: auto;
+        }
+
+
+        @media (max-width: 600px) {
+            .logo {
+                max-width: 90px;
+            }
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .card {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="C:/Users/MSG/Projects/jewellery-loan-app/assets/images/logo.png" alt="Logo" class="logo">
+        </div>
+        <h2><strong>JEWELLERY LOAN CALCULATOR - TAMILNADU GOLD APPRAISER'S WELFARE ASSOSIATION UCO BANK</strong></h2>
+
+        <!-- Flexbox container for gold cards -->
+        <form id="loanForm" onsubmit="event.preventDefault(); calculateLoan();">
+            <div class="flex-container" id="goldSections"></div>
+
+            <!-- Buttons for calculate and reset -->
+            <div style="margin-top: 20px;">
+                <button type="submit" class="btn-calculate">Calculate Loan Eligible Amount</button>
+                <button type="button" class="btn-reset" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+
+        <div id="results" style="display: none;">
+            <h3 id="totalLoan">Total Loan Eligible Amount: ₹0</h3>
+            <h3 id="totalValue">Total Value Amount: ₹0</h3>
+        </div>
+    </div>
+
+    <script>
+        const caratValues = { 18: 4830, 19: 5100, 20: 5360, 21: 5630, 22: 5900 };
+        const valueAmounts = { 18: 6500, 19: 6800, 20: 7200, 21: 7600, 22: 7900 };
+        
+        // Generate gold sections dynamically with colors
+        function generateGoldSections() {
+            let goldSections = "";
+            for (let carat in caratValues) {
+                goldSections += `
+                <div class="card card-${carat}">
+                    <h3><strong>${carat}K Gold</strong></h3>
+                    <label for="gold${carat}">Gold Weight (grams):</label>
+                    <input type="number" id="gold${carat}" placeholder="Enter weight", step = "any">
+
+                    <label for="stone${carat}">Stone Weight (grams):</label>
+                    <input type="number" id="stone${carat}" placeholder="Enter stone weight", step = "any">
+
+                    <label for="margin${carat}">Margin Percentage (≤10%):</label>
+                    <input type="number" id="margin${carat}" placeholder="Enter margin %" max="10">
+
+                    <div id="breakdown${carat}" class="breakdown">
+                        <strong>Loan Breakdown:</strong><br>
+                        Net Weight: 0.00g<br>
+                        Loan Eligible Amount: ₹0<br>
+                        Value Amount: ₹0
+                    </div>
+                </div>`;
+            }
+            document.getElementById("goldSections").innerHTML = goldSections;
+        }
+
+        // Calculate loan and value for all karats and update individual breakdowns and total amounts
+        function calculateLoan() {
+            let totalLoan = 0;
+            let totalValue = 0;
+
+            for (let carat in caratValues) {
+                let goldWeight = parseFloat(document.getElementById(`gold${carat}`).value) || 0;
+                let stoneWeight = parseFloat(document.getElementById(`stone${carat}`).value) || 0;
+                let marginPercent = parseFloat(document.getElementById(`margin${carat}`).value) || 0;
+
+                // Prevent invalid margin percentage
+                if (marginPercent > 10) {
+                    alert(`Margin percentage for ${carat}K cannot exceed 10%.`);
+                    return;
+                }
+
+                // Net gold weight after deductions
+                let finalGoldWeight = goldWeight - stoneWeight;
+                let marginReduction = (finalGoldWeight * marginPercent) / 100;
+                let netWeight = finalGoldWeight - marginReduction;
+
+                // Loan and value amount calculations
+                let loanAmount = caratValues[carat] * netWeight;
+                let valueAmount = valueAmounts[carat] * netWeight;
+
+                // Show and update breakdown for each karat
+                let breakdownElement = document.getElementById(`breakdown${carat}`);
+                breakdownElement.innerHTML = `
+                    <strong>Loan Breakdown:</strong><br>
+                    Net Weight: ${netWeight.toFixed(2)}g<br>
+                    Loan Eligible Amount: ₹${loanAmount.toLocaleString()}<br>
+                    Value Amount: ₹${valueAmount.toLocaleString()}
+                `;
+                breakdownElement.style.display = "block";
+
+                // Accumulate totals
+                totalLoan += loanAmount;
+                totalValue += valueAmount;
+            }
+
+            // Show results after clicking the button or pressing enter
+            document.getElementById("results").style.display = "block";
+            document.getElementById("totalLoan").innerHTML = `Total Loan Eligible Amount: ₹${totalLoan.toLocaleString()}`;
+            document.getElementById("totalValue").innerHTML = `Total Value Amount: ₹${totalValue.toLocaleString()}`;
+        }
+
+        // Reset form and breakdowns
+        function resetForm() {
+            // Clear all input fields
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => input.value = "");
+
+            // Hide and reset breakdowns
+            for (let carat in caratValues) {
+                document.getElementById(`breakdown${carat}`).innerHTML = `
+                    <strong>Loan Breakdown:</strong><br>
+                    Net Weight: 0.00g<br>
+                    Loan Eligible Amount: ₹0<br>
+                    Value Amount: ₹0
+                `;
+                document.getElementById(`breakdown${carat}`).style.display = "none";
+            }
+
+            // Hide results
+            document.getElementById("results").style.display = "none";
+        }
+
+        // Generate sections on page load
+        window.onload = generateGoldSections;
+
+        // Add Enter key press listener to calculate when pressing Enter
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                calculateLoan();
+            }
+        });
+    </script>
+</body>
+
+</html>
